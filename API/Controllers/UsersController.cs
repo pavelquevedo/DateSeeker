@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers 
 {
+    [Authorize]
     public class UsersController : BaseApiController
     {
         private readonly DataContext context;
@@ -20,7 +21,6 @@ namespace API.Controllers
 
         // api/users
         [HttpGet]
-        //[Authorize]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers(){
 
             var users = await this.context.Users.ToListAsync(); 
@@ -30,7 +30,6 @@ namespace API.Controllers
 
         // api/users/3
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<AppUser>> GetUsers(int id){
             
             var user = await this.context.Users.FindAsync(id);
