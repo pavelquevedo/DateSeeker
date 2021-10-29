@@ -457,3 +457,4 @@ appsettings.json
 dateseeker.db
 
 ssl
+*.old

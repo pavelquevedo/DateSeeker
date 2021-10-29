@@ -12,7 +12,7 @@ export class AccountService {
 
   baseUrl = environment.apiUrl;
   
-  private currentUserSource = new ReplaySubject<User>(1);
+  private currentUserSource = new ReplaySubject<User | null>(1);
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(private http: HttpClient) {
@@ -50,6 +50,10 @@ export class AccountService {
 
   logout(){
     localStorage.removeItem('user');
+    this.currentUserSource.next(null);
+    // this.currentUserSource.unsubscribe(); 
+    // this.currentUser$ = this.currentUserSource.asObservable();   
+    // alert(this.currentUser$);
   }
 
 }
