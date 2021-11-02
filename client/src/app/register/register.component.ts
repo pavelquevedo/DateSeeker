@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../_services/account.service';
 
@@ -12,7 +12,7 @@ export class RegisterComponent implements OnInit {
   // @Input() usersFromHomeComponent: any;
   @Output() cancelRegister = new EventEmitter();
 
-  constructor(private accountService: AccountService, private toastr: ToastrService){}
+  constructor(private accountService: AccountService, private toastr: ToastrService, private formBuilder: FormBuilder){}
 
   model: any = {
     username:"",
@@ -32,10 +32,10 @@ export class RegisterComponent implements OnInit {
   }
 
   initializeForm(){
-    this.registerForm = new FormGroup({
-      username: new FormControl('', Validators.required),
-      password: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(8)]),
-      confirmPassword: new FormControl('', [Validators.required, this.matchValues('password')])
+    this.registerForm = this.formBuilder.group({
+      username: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(8)]],
+      confirmPassword: ['', [Validators.required, this.matchValues('password')]]
     });
     //This is to re-fire the validation of confirmPassword if the user
     // changes the password field after confirmPassword
