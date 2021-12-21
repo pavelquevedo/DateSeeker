@@ -30,6 +30,10 @@ namespace API.Controllers
         }
 
         // api/users
+        /// <summary>
+        /// Method to get all the users registered in the database
+        /// </summary>
+        /// <returns>Collection of MemberDto</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers(){
             
@@ -41,25 +45,25 @@ namespace API.Controllers
             return Ok(users);
         }
 
-        // api/users/3
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<MemberDto>> GetUsers(int id){
-
-        //    var user = await _userRepository.GetUserByIdAsync(id);
-
-        //    return _mapper.Map<MemberDto>(user);
-        //}
-
         // api/users/daniel
+        /// <summary>
+        /// Method to get a single user
+        /// </summary>
+        /// <param name="username">identifier of a registered user</param>
+        /// <returns>Single MemberDTO object</returns>
         [HttpGet("{username}", Name = "GetUser")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
-
             var user = await _userRepository.GetUserByUserNameAsync(username);
 
             return _mapper.Map<MemberDto>(user);
         }
 
+        /// <summary>
+        /// Method to update user's data in the database
+        /// </summary>
+        /// <param name="memberUpdateDto">MemberDto with the modified values</param>
+        /// <returns>NoContent code if success, BadRequest code if fails</returns>
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
         {
@@ -79,6 +83,11 @@ namespace API.Controllers
             }
         }
 
+        /// <summary>
+        /// Method to add a new photo for a registered user
+        /// </summary>
+        /// <param name="file">File with photo content</param>
+        /// <returns>Created code with the route where the resource can be found</returns>
         [HttpPost("add-photo")]
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
         {
@@ -114,6 +123,11 @@ namespace API.Controllers
             return BadRequest("Problem adding photo");
         }
 
+        /// <summary>
+        /// Method to change the main photo of an user
+        /// </summary>
+        /// <param name="photoId">PhotoID of the requested main photo</param>
+        /// <returns>NoContent code if success, BadRequest code if fails</returns>
         [HttpPut("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
         {
@@ -138,6 +152,11 @@ namespace API.Controllers
             return BadRequest("Failed to set main photo");
         }
 
+        /// <summary>
+        /// Method to delete an users photo
+        /// </summary>
+        /// <param name="photoId">Identifier of the photo to be deleted</param>
+        /// <returns>OK code if success, BadRequest code if fail, NotFound code if photo doesn't exist</returns>
         [HttpDelete("delete-photo/{photoId}")]
         public async Task<ActionResult> DeletePhoto(int photoId)
         {
