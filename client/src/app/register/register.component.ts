@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../_services/account.service';
 
@@ -12,19 +14,29 @@ export class RegisterComponent implements OnInit {
   // @Input() usersFromHomeComponent: any;
   @Output() cancelRegister = new EventEmitter();
 
-  constructor(private accountService: AccountService, private toastr: ToastrService, private formBuilder: FormBuilder){}
-
-  model: any = {
-    username:"",
-    password:""
-  }
-
-  
+  constructor(private accountService: AccountService, 
+    private toastr: ToastrService, 
+    private formBuilder: FormBuilder,
+    private router: Router){}
 
   registerForm: FormGroup;
+  maxDate: Date;
+  validationErrors: string[] = [];
+  formData = "";
+
+  bsConfig: Partial<BsDatepickerConfig>;
 
   ngOnInit(): void {
     this.initializeForm();
+    this.maxDate = new Date();
+    //This to allow user registration just if 18+
+    this.maxDate.setFullYear(this.maxDate.getFullYear() -18);
+    this.formData = JSON.stringify(this.registerForm.value);
+
+    this.bsConfig = {
+      containerClass: 'theme-red',
+      dateInputFormat: 'DD/MM/YYYY'    
+    }
   }
 
   getObjectKeys(arg: any) {
@@ -33,7 +45,12 @@ export class RegisterComponent implements OnInit {
 
   initializeForm(){
     this.registerForm = this.formBuilder.group({
+      gender: ['male', Validators.required],
       username: ['', Validators.required],
+      knownAs: ['', Validators.required],
+      dateOfBirth: ['', Validators.required],
+      city: ['', Validators.required],
+      country: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(8)]],
       confirmPassword: ['', [Validators.required, this.matchValues('password')]]
     });
@@ -55,13 +72,14 @@ export class RegisterComponent implements OnInit {
 
   register(){
     console.log(this.registerForm.value);
-    // this.accountService.register(this.model).subscribe(response =>{
-    //   console.log(response);
-    //   this.cancel();
-    // }, error => {
-    //   console.log(error);
-    //   this.toastr.error(error.error);
-    // });
+    this.accountService.register(this.registerForm.value).subscribe(response =>{
+      this.router.navigateByUrl('/members');
+      this.cancel();
+    }, error => {
+      this.validationErrors = error;
+      // console.log(error);
+      // this.toastr.error(error.error);
+    });
   }
 
   cancel(){
