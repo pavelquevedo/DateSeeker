@@ -70,6 +70,7 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  //This is the original, but it doesn't work if it has "strict" in the tsconfig.json
   matchValues2(matchTo: string): ValidatorFn{
     return (control: AbstractControl) => {
       return control?.value as string === control?.parent?.controls[matchTo].value as string ? null : {isMatching: true}
