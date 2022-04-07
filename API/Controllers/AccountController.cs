@@ -29,8 +29,6 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            using var hmac = new HMACSHA512();
-
             if (await UserExists(registerDto.UserName))
             {
                 return BadRequest("Username is taken");
@@ -38,6 +36,7 @@ namespace API.Controllers
 
             var user = _mapper.Map<AppUser>(registerDto);
 
+            using var hmac = new HMACSHA512();
             //Applying password hash and salt
             user.UserName = registerDto.UserName.ToLower();
             user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
