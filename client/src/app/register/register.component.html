@@ -15,35 +15,20 @@
             <input type="radio" value="female" formControlName='gender' class="ml-3"> Female
         </label>
     </div>
-    <app-text-input [formControl]='$any(registerForm.controls["username"])' 
+    <app-text-input [formControl]='registerForm.controls["username"]' 
         [label]='"Username"' ></app-text-input>
-    <app-text-input [formControl]='$any(registerForm.controls["knownAs"])' 
+    <app-text-input [formControl]='registerForm.controls["knownAs"]' 
         [label]='"Known As"' ></app-text-input>
-    <app-date-input [formControl]='$any(registerForm.controls["dateOfBirth"])' 
+    <app-date-input [formControl]='registerForm.controls["dateOfBirth"]' 
         [label]='"Date of Birth"' [maxDate]='maxDate' ></app-date-input>
-        
-    <!-- <div class="form-group">
-        <input type="text"
-            [class.is-invalid]='registerForm.get("dateOfBirth")!.touched && registerForm.get("dateOfBirth")!.invalid'
-            placeholder="Date of Birth"
-            class="form-control"
-            [formControl]='$any(registerForm.controls["dateOfBirth"])'
-            [bsConfig]='bsConfig'
-            [maxDate]='maxDate'
-            bsDatepicker>
-            <div *ngIf="registerForm.get('dateOfBirth')!.errors?.required" class="invalid-feedback" >
-                Date of birth is required
-            </div>
-    </div> -->
-
-    <app-text-input [formControl]='$any(registerForm.controls["city"])' 
+    <app-text-input [formControl]='registerForm.controls["city"]' 
         [label]='"City"' ></app-text-input>
-    <app-text-input [formControl]='$any(registerForm.controls["country"])' 
+    <app-text-input [formControl]='registerForm.controls["country"]' 
         [label]='"Country"' ></app-text-input>
-    <app-text-input [formControl]='$any(registerForm.controls["password"])' 
-        [label]='"Password"' [type]='$any("password")' ></app-text-input>
-    <app-text-input [formControl]='$any(registerForm.controls["confirmPassword"])' 
-        [label]='"Confirm Password"' [type]='$any("password")' ></app-text-input>
+    <app-text-input [formControl]='registerForm.controls["password"]' 
+        [label]='"Password"' [type]='"password"' ></app-text-input>
+    <app-text-input [formControl]='registerForm.controls["confirmPassword"]' 
+        [label]='"Confirm Password"' [type]='"password"' ></app-text-input>
     
 
         <div class="row" *ngIf="validationErrors.length > 0">
@@ -53,19 +38,12 @@
                 </li>
             </ul>
         </div>
-    <!-- <div class="form-group">
-        <label>Who is your favorite user?</label>
-        <select class="form-control">
-            <option *ngFor="let user of usersFromHomeComponent" [value]="user.userName">
-                {{user.userName}}
-            </option>
-        </select>
-    </div> -->
+    
     <div class="form-group text-center">
         <button class="btn btn-success mr-2" [disabled]='!registerForm.valid' type="submit">Register</button>
         <button class="btn btn-default mr-2" (click)="cancel()" type="button">Cancel</button>
     </div>
 
-    <p>IS VALID: {{registerForm.valid}}</p>
-    <p>{{registerForm.value | json}}</p>
+    <!-- <p>IS VALID: {{registerForm.valid}}</p>
+    <p>{{registerForm.value | json}}</p> -->
 </form>

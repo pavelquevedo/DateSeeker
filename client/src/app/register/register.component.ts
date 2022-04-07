@@ -64,9 +64,15 @@ export class RegisterComponent implements OnInit {
   matchValues(matchTo: string): ValidatorFn{
     return(control: AbstractControl) =>{
       const parentControls = control.parent?.controls as any;
-      return (parentControls) 
+      return (parentControls)  
         ? (control?.value === parentControls[matchTo]?.value) 
         ? null : {isMatching: true} : null;
+    }
+  }
+
+  matchValues2(matchTo: string): ValidatorFn{
+    return (control: AbstractControl) => {
+      return control?.value as string === control?.parent?.controls[matchTo].value as string ? null : {isMatching: true}
     }
   }
 

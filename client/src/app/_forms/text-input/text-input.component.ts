@@ -13,7 +13,6 @@ export class TextInputComponent implements ControlValueAccessor {
   constructor(@Self() public ngControl: NgControl) { 
     this.ngControl.valueAccessor = this;
   }
-
   writeValue(obj: any): void {
 
   }
@@ -23,8 +22,9 @@ export class TextInputComponent implements ControlValueAccessor {
   registerOnTouched(fn: any): void {
 
   }
+  setDisabledState?(isDisabled: boolean): void {
 
-  ngOnInit(): void {
   }
 
+  
 }
