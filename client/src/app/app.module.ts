@@ -25,6 +25,7 @@ import { PhotoEditorComponent } from './member/photo-editor/photo-editor.compone
 import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { DateInputComponent } from './_forms/date-input/date-input.component';
 import { ListsComponent } from './lists/lists.component';
+import { MemberMessagesComponent } from './member/member-messages/member-messages.component';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { ListsComponent } from './lists/lists.component';
     PhotoEditorComponent,
     TextInputComponent,
     DateInputComponent,
-    ListsComponent
+    ListsComponent,
+    MemberMessagesComponent
   ],
   imports: [
     BrowserModule,

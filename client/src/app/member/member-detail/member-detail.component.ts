@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov/ngx-gallery';
+import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { Member } from 'src/app/_models/member';
+import { Message } from 'src/app/_models/message';
 import { MembersService } from 'src/app/_services/members.service';
+import { MessageService } from 'src/app/_services/message.service';
 
 @Component({
   selector: 'app-member-detail',
@@ -10,15 +13,29 @@ import { MembersService } from 'src/app/_services/members.service';
   styleUrls: ['./member-detail.component.css']
 })
 export class MemberDetailComponent implements OnInit {
-
+  @ViewChild('memberTabs', {static: true}) memberTabs: TabsetComponent;
+  activeTab: TabDirective;
   member: Member;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
+  messages: Message[] = [];
 
-  constructor(private memberService: MembersService, private route: ActivatedRoute) { }
+  constructor(private memberService: MembersService, 
+              private messageService: MessageService, 
+              private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.loadMember();
+    
+    //this.loadMember();
+    //We're replacing the "loadMember" method for the route resolver for MemberDetail, since we need the data 
+    //before rendering the template.
+    this.route.data.subscribe(data => {
+      this.member = data.member;
+    })
+
+    this.route.queryParams.subscribe(params => {
+      params.tab ? this.selectTab(params.tab) : this.selectTab(0);
+    })
 
     this.galleryOptions = [
       {
@@ -46,6 +63,7 @@ export class MemberDetailComponent implements OnInit {
       }
     ];
 
+    this.galleryImages = this.getImages();
     
   }
 
@@ -61,32 +79,50 @@ export class MemberDetailComponent implements OnInit {
     return imageUrls;
   }
   
-  loadMember(){
-    this.memberService.getMember(this.route.snapshot.paramMap.get('username')).subscribe(member => {
-      this.member = member;
-      this.galleryImages = this.getImages();
-      // this.galleryImages = [
-      //   {
-      //     small: 'https://preview.ibb.co/jrsA6R/img12.jpg',
-      //     medium: 'https://preview.ibb.co/jrsA6R/img12.jpg',
-      //     big: 'https://preview.ibb.co/jrsA6R/img12.jpg'
-      //   },
-      //   {
-      //     small: 'https://preview.ibb.co/kPE1D6/clouds.jpg',
-      //     medium: 'https://preview.ibb.co/kPE1D6/clouds.jpg',
-      //     big: 'https://preview.ibb.co/kPE1D6/clouds.jpg'
-      //   },
-      //   {
-      //     small: 'https://preview.ibb.co/mwsA6R/img7.jpg',
-      //     medium: 'https://preview.ibb.co/mwsA6R/img7.jpg',
-      //     big: 'https://preview.ibb.co/mwsA6R/img7.jpg'
-      //   },{
-      //     small: 'https://preview.ibb.co/kZGsLm/img8.jpg',
-      //     medium: 'https://preview.ibb.co/kZGsLm/img8.jpg',
-      //     big: 'https://preview.ibb.co/kZGsLm/img8.jpg'
-      //   },      
-      // ]; 
-    })
+  //Unused loadMember function, since it was replaced for a route resolver.
+  // loadMember(){
+  //   this.memberService.getMember(this.route.snapshot.paramMap.get('username')).subscribe(member => {
+  //     this.member = member;
+  //     this.galleryImages = this.getImages();
+  //     // this.galleryImages = [
+  //     //   {
+  //     //     small: 'https://preview.ibb.co/jrsA6R/img12.jpg',
+  //     //     medium: 'https://preview.ibb.co/jrsA6R/img12.jpg',
+  //     //     big: 'https://preview.ibb.co/jrsA6R/img12.jpg'
+  //     //   },
+  //     //   {
+  //     //     small: 'https://preview.ibb.co/kPE1D6/clouds.jpg',
+  //     //     medium: 'https://preview.ibb.co/kPE1D6/clouds.jpg',
+  //     //     big: 'https://preview.ibb.co/kPE1D6/clouds.jpg'
+  //     //   },
+  //     //   {
+  //     //     small: 'https://preview.ibb.co/mwsA6R/img7.jpg',
+  //     //     medium: 'https://preview.ibb.co/mwsA6R/img7.jpg',
+  //     //     big: 'https://preview.ibb.co/mwsA6R/img7.jpg'
+  //     //   },{
+  //     //     small: 'https://preview.ibb.co/kZGsLm/img8.jpg',
+  //     //     medium: 'https://preview.ibb.co/kZGsLm/img8.jpg',
+  //     //     big: 'https://preview.ibb.co/kZGsLm/img8.jpg'
+  //     //   },      
+  //     // ]; 
+  //   })
+  // }
+
+  onTabActivated(data: TabDirective){
+    this.activeTab = data;
+    if (this.activeTab.heading === 'Messages' && this.messages.length === 0) {
+      this.loadMessages();    
+    }
+  }
+
+  selectTab(tabId: number){
+    this.memberTabs.tabs[tabId].active = true;
+  }
+
+  loadMessages(){
+    this.messageService.getMessageThread(this.member.username).subscribe(messages =>{
+      this.messages = messages;
+    });
   }
 
 }
