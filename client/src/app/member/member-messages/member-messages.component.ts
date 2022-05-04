@@ -14,7 +14,7 @@ export class MemberMessagesComponent implements OnInit {
   @Input() messages: Message[];
   messageContent: string;
   
-  constructor(private messageService: MessageService) { }
+  constructor(public messageService: MessageService) { }
 
   ngOnInit(): void {
     //This was moved to "member-detail.component.ts"
@@ -22,8 +22,9 @@ export class MemberMessagesComponent implements OnInit {
   }
 
   sendMessage(){
-    this.messageService.sendMessage(this.username, this.messageContent).subscribe(message =>{
-      this.messages.push(message);
+    this.messageService.sendMessage(this.username, this.messageContent).then(() =>{
+      //Removing this line since the messages are already updated with SignalR
+      //this.messages.push(message);
       this.messageForm.reset();
     })
   }
