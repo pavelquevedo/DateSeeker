@@ -14,6 +14,7 @@ export class MemberMessagesComponent implements OnInit {
   @Input() username: string;
   @Input() messages: Message[];
   messageContent: string;
+  loading = false;
   
   constructor(public messageService: MessageService) { }
 
@@ -23,10 +24,13 @@ export class MemberMessagesComponent implements OnInit {
   }
 
   sendMessage(){
+    this.loading = true;
     this.messageService.sendMessage(this.username, this.messageContent).then(() =>{
       //Removing this line since the messages are already updated with SignalR
       //this.messages.push(message);
       this.messageForm.reset();
-    })
+    }).finally(() => {
+      this.loading = false;
+    });
   }
 }
